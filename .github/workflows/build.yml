@@ -18,7 +18,7 @@ jobs:
   test:
     name: Unit tests
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:
@@ -36,16 +36,16 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Run application and build-logic tests
-        timeout-minutes: 35
+        timeout-minutes: 50
         run: |
           chmod +x ./gradlew
-          ./gradlew -p build-logic test --no-daemon --max-workers=2 -Pkotlin.compiler.execution.strategy=in-process --stacktrace
-          ./gradlew :app:testFdroidDebugUnitTest verifyKotlinFileSize --no-daemon --max-workers=2 -Pkotlin.compiler.execution.strategy=in-process --stacktrace
+          ./gradlew -p build-logic test --stacktrace
+          ./gradlew :app:testFdroidDebugUnitTest verifyKotlinFileSize --stacktrace
 
       - name: Check Play flavor behavior
-        timeout-minutes: 12
+        timeout-minutes: 20
         run: |
-          ./gradlew :app:testPlayDebugUnitTest --tests 'com.newoether.agora.sandbox.PlaySandboxFlavorTest' --no-daemon --max-workers=2 -Pkotlin.compiler.execution.strategy=in-process --stacktrace
+          ./gradlew :app:testPlayDebugUnitTest --tests 'com.newoether.agora.sandbox.PlaySandboxFlavorTest' --stacktrace
 
       - name: Upload test reports
         if: ${{ always() }}
